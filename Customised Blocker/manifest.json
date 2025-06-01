@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "Conditional Blocker",
+  "version": "1.0.0",
+  "description": "Customise how you Block websites",
+  "action": {
+    "default_icon": "assets/icon.png",
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "permissions": [
+	"scripting",
+	"tabs",
+	"storage",
+  "contextMenus",
+  "activeTab",
+  "notifications",
+  "declarativeNetRequest"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "options_page": "options.html",
+  "web_accessible_resources": [
+    {
+      "resources": ["popup.js"],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentscript.js"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}

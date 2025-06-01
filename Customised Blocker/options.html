@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Conditional Blocker</title>
+	<style> 
+		h1 {
+				text-align: center;
+			}
+			
+		p {
+				font-size: 1.3em;
+			}
+			
+		select {
+				font-size: 1.3em;
+				text-align: center;
+			}
+		select:focus {
+			font-size: 1.3em !important;
+		}
+		textarea {
+			width:75%;
+			font-size: 2em;
+			max-width:1050px; display: block;margin-left: auto;margin-right: auto;
+		}
+
+		table {
+			font-family: arial, sans-serif;
+			border-collapse: collapse;
+			width: 800px;
+			table-layout: fixed;
+			font-size: 1.3em;
+			/* width:70%; */
+		}
+
+		td, th {
+			/* border: 1px solid #dddddd; */
+			text-align: left;
+			padding: 8px;
+			max-width: 200px;
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
+
+		/* tr:nth-child(even) {
+			background-color: #dddddd;
+		} */
+
+		
+		.table-container {
+			/* align: center; */
+			max-width: 815px;
+			max-height: 200px;
+			overflow-y: auto;
+			margin: auto;
+			border: 1px solid #dddddd;
+			/* overflow-x: auto; */
+		}
+
+
+		thead th {
+			position: sticky;
+			top: 0;
+			z-index: 1;
+			background: white;
+			border: 1px solid #dddddd;
+		}
+
+
+		.button1 {
+			text-align:center;
+			font-size: 0.9em;
+			color:white;
+			background-color: green;
+			justify-content:center;
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		.button2 {
+			text-align:center;
+			font-size: 1.3em;
+			color:white;
+			background-color: green;
+			justify-content:center;
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		::backdrop {
+			background-color: black;
+			opacity: 0.8;
+		}
+
+		.close {
+			color: #aaaaaa;
+			float: right;
+			font-size: 28px;
+			font-weight: bold;
+		}
+
+		.close:hover, .close:focus {
+			color: #000;
+			text-decoration: none;
+			cursor: pointer;
+		}
+
+		.hide-button{
+			display:none;
+		}
+
+
+		/* thead, tbody {
+			display: block;
+			width: 400px;
+		}
+
+		
+		tbody {
+			height:350px;
+			overflow: auto;
+		} */
+
+
+
+		/* .fixed-col {
+			width: 20px;
+			max-width: 20px;
+			min-width: 20px;
+			overflow: hidden; 
+		} */
+
+
+	</style>
+  </head>
+  <body>
+	<h1> Conditional Blocker </h1>
+	<h1> Blocked Website</h1>
+	<p> Input Websites to be blocked.<br><br>
+	</p>
+ 
+	<!-- <form id="data_block" method="post" action="/predict">
+	<textarea id="the_data" name="the_data" placeholder="Type your text here and click process" rows="4" cols = "50"></textarea>
+	<div id="result" style = "text-align: center;font-size: 1.3em;font-weight: bold;"></div>    
+	<br><br> 
+	<button id="process" style="text-align:center;font-size: 1.3em;color:white;background-color: green;display: block;margin-left: auto;margin-right: auto;">Process Text</button>
+	 </form> -->
+	
+	<div id="dynamic-table">
+
+	</div>
+
+	<!-- <p align = "center">Press the save button if you are happy with our analysis or manually change your personality type and press save. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+	<select id="color">
+      <option value="ENFJ">ENFJ</option>
+      <option value="ENFP">ENFP</option>
+      <option value="ENTJ">ENTJ</option>
+      <option value="ENTP">ENTP</option>
+	  <option value="ESFJ">ESFJ</option>
+      <option value="ESFP">ESFP</option>
+      <option value="ESTJ">ESTJ</option>
+      <option value="ESTP">ESTP</option>
+	  <option value="INFJ">INFJ</option>
+      <option value="INFP">INFP</option>
+      <option value="INTJ">INTJ</option>
+      <option value="INTP">INTP</option>
+	  <option value="ISFJ">ISFJ</option>
+      <option value="ISFP">ISFP</option>
+      <option value="ISTJ">ISTJ</option>
+      <option value="ISTP">ISTP</option>
+    </select>
+	</p>
+	<br> -->
+
+	</p>
+    <div id="status" style = "text-align: center;font-size: 1.3em;font-weight: bold;"></div>
+	<div id="cursor_result" style = "text-align: center;font-size: 1.3em;font-weight: bold;"></div> 
+    <button id="save" class ="button2" >Test Button</button>
+	<!-- <button id="save2" class ="button2" >Test Button 2</button> -->
+	<br>
+	<br>
+	<br>
+
+	<dialog id="data-Entry-dialog">
+		<span class = "close">&times;</span>
+		<form id="modal-form">
+			Key ID: <input type="text" id="key-id" name="key-id"> <br>
+			Website Name: <input type="text" id="name-db" name="name-db"> <br>
+			Hard Block: 
+			<!-- <input type="text" id="hard-block" name="hard-block">  -->
+				<select id="hard-block">
+					<option value="Yes">Yes</option>
+					<option value="No">No</option>
+				</select>
+			<!-- <div id="result" style = "text-align: center;font-size: 1.3em;font-weight: bold;"></div>  -->
+			<!-- <button id="modal-close" class="button2" autofocus>Close</button> -->
+			<!-- <input type="submit" class = "button2" value ="Delete">
+			<button id="modal-save" class="button2" autofocus>Save</button>
+			<button id="modal-create" class="button2" autofocus>Save</button> -->
+			<!-- <textarea></textarea> -->
+		</form>
+			<button id="modal-close" class="button2" autofocus>Close</button>
+			<button id="modal-delete" class="button2" autofocus>Delete</button>
+			<button id="modal-save" class="button2" autofocus>Save</button>
+			<button id="modal-create" class="button2" autofocus>Save</button>
+
+	</dialog>
+
+	<script src="options.js"></script>
+  </body>
+</html>
