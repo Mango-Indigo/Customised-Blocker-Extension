@@ -89,6 +89,28 @@
 			margin-right: auto;
 		}
 
+		.button3 {
+			text-align:center;
+			font-size: 1.3em;
+			color:white;
+			background-color: red;
+			justify-content:center;
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		.button4 {
+			text-align:center;
+			font-size: 1.3em;
+			color:white;
+			background-color: rgb(40, 40, 40);
+			justify-content:center;
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
 		::backdrop {
 			background-color: black;
 			opacity: 0.8;
@@ -111,6 +133,37 @@
 			display:none;
 		}
 
+		dialog:modal{
+			/* overflow:auto; */
+			/* resize:both; */
+			/* min-height:10px; */
+			max-width: 100vw; /*dialog boxes have same max width formula, this overrides that*/
+			height: 300px;
+			width: 500px;
+			position:relative;
+		}
+
+		input {
+			width: 80%;
+		}
+
+		div.button-left{
+			position:absolute;
+			bottom:30px;
+			left:30px;
+		}
+
+		div.button-right{
+			position:absolute;
+			bottom:30px;
+			right:30px;
+		}
+
+		div.button-right2{
+			position:absolute;
+			bottom:30px;
+			right:90px;
+		}
 
 		/* thead, tbody {
 			display: block;
@@ -152,28 +205,6 @@
 
 	</div>
 
-	<!-- <p align = "center">Press the save button if you are happy with our analysis or manually change your personality type and press save. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-	<select id="color">
-      <option value="ENFJ">ENFJ</option>
-      <option value="ENFP">ENFP</option>
-      <option value="ENTJ">ENTJ</option>
-      <option value="ENTP">ENTP</option>
-	  <option value="ESFJ">ESFJ</option>
-      <option value="ESFP">ESFP</option>
-      <option value="ESTJ">ESTJ</option>
-      <option value="ESTP">ESTP</option>
-	  <option value="INFJ">INFJ</option>
-      <option value="INFP">INFP</option>
-      <option value="INTJ">INTJ</option>
-      <option value="INTP">INTP</option>
-	  <option value="ISFJ">ISFJ</option>
-      <option value="ISFP">ISFP</option>
-      <option value="ISTJ">ISTJ</option>
-      <option value="ISTP">ISTP</option>
-    </select>
-	</p>
-	<br> -->
 
 	</p>
     <div id="status" style = "text-align: center;font-size: 1.3em;font-weight: bold;"></div>
@@ -185,27 +216,37 @@
 	<br>
 
 	<dialog id="data-Entry-dialog">
-		<span class = "close">&times;</span>
+		<span class="close">&times;</span>
 		<form id="modal-form">
-			Key ID: <input type="text" id="key-id" name="key-id"> <br>
-			Website Name: <input type="text" id="name-db" name="name-db"> <br>
-			Hard Block: 
-			<!-- <input type="text" id="hard-block" name="hard-block">  -->
-				<select id="hard-block">
-					<option value="Yes">Yes</option>
-					<option value="No">No</option>
-				</select>
-			<!-- <div id="result" style = "text-align: center;font-size: 1.3em;font-weight: bold;"></div>  -->
-			<!-- <button id="modal-close" class="button2" autofocus>Close</button> -->
-			<!-- <input type="submit" class = "button2" value ="Delete">
-			<button id="modal-save" class="button2" autofocus>Save</button>
-			<button id="modal-create" class="button2" autofocus>Save</button> -->
-			<!-- <textarea></textarea> -->
+			<input type="hidden" id="key-id" name="key-id"> <br>
+			<b>Website Name</b> <br> <input type="text" id="name-db" name="name-db"> <br><br>
+			<b>Hard Block:</b>
+			<select id="hard-block">
+				<option value="Yes">Yes</option>
+				<option value="No">No</option>
+			</select>
+			<b>Soft Block: </b>
+			<select id="soft-block">
+				<option value="Yes">Yes</option>
+				<option value="No">No</option>
+			</select>
+
 		</form>
-			<button id="modal-close" class="button2" autofocus>Close</button>
-			<button id="modal-delete" class="button2" autofocus>Delete</button>
-			<button id="modal-save" class="button2" autofocus>Save</button>
-			<button id="modal-create" class="button2" autofocus>Save</button>
+
+			<div class="button-left">
+				<button id="modal-delete" class="button3" autofocus>Delete</button>
+			</div>
+			
+
+			<div class="button-right2">
+				<button id="modal-save" class="button2" autofocus>Save</button>
+				<button id="modal-create" class="button2" autofocus>Save</button>
+			</div>
+
+			<div class="button-right">
+				<button id="modal-close" class="button4" autofocus>Close</button>
+			</div>
+
 
 	</dialog>
 
