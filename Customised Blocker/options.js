@@ -101,17 +101,8 @@ request.onupgradeneeded = function(event) {
   objectStore.createIndex("name","name",{unique: false});
   //unique true means it cannot have duplicates
   objectStore.createIndex("hardBlock","hardBlock",{unique: false});
-  //we use transaction to enter data into the table, oncomplete checks if the table is created
-  objectStore.transaction.oncomplete = function(event) {
+  objectStore.createIndex("softBlock","softBlock",{unique: false});
 
-    // we are creating a transaction on our object, specifying the instance, what we can do with and connecting to that instance
-    const dataObjectStore = db.transaction("Block_List_instance","readwrite").objectStore("Block_List_instance");
-    //use for loop like thing to add each entry of the sample data
-    sampleData.forEach((entry) => {
-      dataObjectStore.add(entry);
-    });
-
-  };
 
 };
 
@@ -166,6 +157,7 @@ function returnMaxKeyValue() {
 };
 
 function removeHardBlockASite(keyValue) {
+  // remove blocked site using the rule id
   // key value of indexedDB table is used as the ruleid to be removed
   chrome.declarativeNetRequest.updateDynamicRules(
     {
@@ -175,6 +167,7 @@ function removeHardBlockASite(keyValue) {
 
 
 // keep adding the same data again and again when button is clicked
+// this function should be removed when testing is over
 function addDataToDB() {
   const request = indexedDB.open("Block_List",4);
   request.onsuccess = function(event) {
@@ -204,8 +197,7 @@ function addRowtoDB(rowArray) {
         // hard block using the funciton addhardBlockASite
         maxKeyValue = await returnMaxKeyValue();
         await addhardBlockASite(maxKeyValue,1,rowArray[0].name);
-        console.log("hello");
-      };
+      }
       //then close the dialog box from here just so that we don't need to refresh the dialog box with other details 
       // perhaps we should return a promise and then display buttons but that is a complicaton for a future time
       document.getElementById("data-Entry-dialog").close();
@@ -221,8 +213,9 @@ function addRowToDBInDialog() {
   const idElem = document.getElementById('key-id');
   const nameElem = document.getElementById('name-db');
   const hardBlockElem = document.getElementById('hard-block');
+  const softBlockElem = document.getElementById('soft-block');
   // create array with object
-  const insertArray = [{name:nameElem.value,hardBlock:hardBlockElem.value}];
+  const insertArray = [{name:nameElem.value,hardBlock:hardBlockElem.value,softBlock:softBlockElem.value}];
   addRowtoDB(insertArray);
 };
 
@@ -241,7 +234,7 @@ function getDatafromDB(keyValue) {
       const request2 = objectStore.get(keyValue);
 
       request2.onsuccess = function(event2) {
-        returnArray = [request2.result.name,request2.result.hardBlock];
+        returnArray = [request2.result.name,request2.result.hardBlock,request2.result.softBlock];
         resolve(returnArray);
       }; 
    };
@@ -275,6 +268,7 @@ function saveDatatoDB (keyValue,remainingData) {
       const data = event.target.result;
       data.name = remainingData[0];
       data.hardBlock = remainingData[1];
+      data.softBlock = remainingData[2];
       // when we put data we have to add the data and the keyValue or else it will create a new one
       const request = objectStore.put(data,keyValue);
       request.onsuccess = async function(event) {
@@ -292,13 +286,14 @@ function saveDatatoDB (keyValue,remainingData) {
 
 function displayData() {
   // displays all data in the IndexedDB as a table and sets button features
-  // since we call this function recursively we clear the DOM tree before adding it back again below
+
+  // note: clearing the DOM tree doesn't help with rendering or processing issues
   // const tableDiv = document.getElementById('dynamic-table');
   // tableDiv.innerHTML = '';
 
   const request = indexedDB.open("Block_List",4);
   // dynamically set the table
-  let tableText = "<div class = table-container> <table> <thead> <tr> <th>Key ID</th> <th> Website Name</th> <th>Hard Block</th> <th> <button id=add-new class =button1 >Add New</button> </th></tr> </thead> <tbody> ";
+  let tableText = "<div class = table-container> <table> <thead> <tr> <th> Website Name</th> <th>Hard Block</th> <th>Soft Block</th> <th> <button id=add-new class =button1 >Add New</button> </th></tr> </thead> <tbody> ";
   request.onsuccess = function(event) {
     db = event.target.result;
     objectStore = db.transaction("Block_List_instance").objectStore("Block_List_instance");
@@ -307,7 +302,7 @@ function displayData() {
       
       const cursor = event.target.result;
       if (cursor) {
-        tableText = tableText +  "<tr> <td> " + cursor.key + " </td> <td> " + cursor.value.name + "</td> <td> " + cursor.value.hardBlock + "</td> <td> <button id=modify" +  cursor.key + " class =button1 >Modify</button> </td> </tr> ";
+        tableText = tableText +  "<tr> <td> " + cursor.value.name + "</td> <td> " + cursor.value.hardBlock + "</td> <td>" + cursor.value.softBlock + " </td> <td> <button id=modify" +  cursor.key + " class =button1 >Modify</button> </td> </tr> ";
         cursor.continue();
       }
       
@@ -322,7 +317,12 @@ function displayData() {
           document.querySelector("dialog").showModal();
           // first we get the key value, enable add new or default dialog box according to value
           keyOfThisRow = Number(button.id.substring(6));
-          // console.log(keyOfThisRow);
+          // get all elements to be used
+          const idElem = document.getElementById('key-id');
+          const nameElem = document.getElementById('name-db');
+          const hardBlockElem = document.getElementById('hard-block');
+          const softBlockElem = document.getElementById('soft-block');
+
           if (isNaN(keyOfThisRow)) {
             // if no value passed through key, this is the add new mode
             // hide delete and save and show create
@@ -333,13 +333,10 @@ function displayData() {
             document.getElementById("modal-create").removeEventListener
 
             // clear existing values in the field
-            const idElem = document.getElementById('key-id');
-            const nameElem = document.getElementById('name-db');
-            const hardBlockElem = document.getElementById('hard-block');
-
             idElem.value = '';
             nameElem.value = '';
             hardBlockElem.value = '';
+            softBlockElem.value = '';
 
             // for the add new mode, we allow user to input and create a new row and then close dialog
             // this is done by nesting in 2 functions
@@ -352,20 +349,19 @@ function displayData() {
             document.getElementById("modal-delete").classList.remove("hide-button");
 
             // for the default mode, we get the data and allow them to modify and delete it 
-            const keyDiv = document.getElementById('key-id');
-            keyDiv.value = keyOfThisRow;
+            idElem.value = keyOfThisRow;
             dataOnModal = await getDatafromDB(keyOfThisRow);
-            const nameDiv = document.getElementById('name-db');
-            nameDiv.value = dataOnModal[0];
-            const hardBlockDiv = document.getElementById('hard-block');
-            hardBlockDiv.value = dataOnModal[1];
-            
+            nameElem.value = dataOnModal[0];
+            hardBlockElem.value = dataOnModal[1];
+            softBlockElem.value = dataOnModal[2];
+
             //button functions: delete,save
             document.getElementById("modal-delete").addEventListener('click',() => {deleteDatafromDB(keyOfThisRow);});
             document.getElementById("modal-save").addEventListener('click',() => {
               const nameValue = document.getElementById('name-db').value;
               const hardBlockValue = document.getElementById('hard-block').value;
-              saveDatatoDB(keyOfThisRow,[nameValue,hardBlockValue]);
+              const softBlockValue = document.getElementById('soft-block').value;
+              saveDatatoDB(keyOfThisRow,[nameValue,hardBlockValue,softBlockValue]);
             });
           };
         });
@@ -422,6 +418,3 @@ document.getElementById('save').addEventListener('click',addDataToDB);
 
 // document.getElementById('save2').addEventListener('click', async function(){
 // () =>{ deleteDatafromDB(28);});
-  
-  
-
