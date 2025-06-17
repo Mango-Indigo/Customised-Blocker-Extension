@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Conditional Blocker",
-  "version": "1.0.0",
+  "name": "Customised Blocker",
+  "version": "1.0.1",
   "description": "Customise how you Block websites",
   "action": {
     "default_icon": "assets/icon.png",
